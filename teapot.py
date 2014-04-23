@@ -155,7 +155,10 @@ class TestNeutron(unittest.TestCase):
             except:
                 pass
         for r in self.neutron.list_routers().get('routers'):
-            self.neutron.delete_router(r.get('id'))
+            try:
+                self.neutron.delete_router(r.get('id'))
+            except:
+                pass
         for s in self.neutron.list_subnets().get('subnets'):
             try:
                 self.neutron.delete_subnet(s.get('id'))
@@ -163,7 +166,10 @@ class TestNeutron(unittest.TestCase):
                 pass
         for n in self.neutron.list_networks().get('networks'):
             if not n.get('router:external'):
-                self.neutron.delete_network(n.get('id'))
+                try:
+                    self.neutron.delete_network(n.get('id'))
+                except:
+                    pass
     
     def test_001_create_network(self):
         """NEUTRON: we can create a network"""
@@ -296,7 +302,10 @@ class TestNova(unittest.TestCase):
             except:
                 pass
         for r in self.neutron.list_routers().get('routers'):
-            self.neutron.delete_router(r.get('id'))
+            try:
+                self.neutron.delete_router(r.get('id'))
+            except:
+                pass
         for s in self.neutron.list_subnets().get('subnets'):
             try:
                 self.neutron.delete_subnet(s.get('id'))
@@ -304,7 +313,10 @@ class TestNova(unittest.TestCase):
                 pass
         for n in self.neutron.list_networks().get('networks'):
             if not n.get('router:external'):
-                self.neutron.delete_network(n.get('id'))
+                try:
+                    self.neutron.delete_network(n.get('id'))
+                except:
+                    pass
     
     def setUp(self):
         self.keystone = ksclient.Client(auth_url=keystone_url,
