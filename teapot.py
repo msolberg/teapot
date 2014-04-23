@@ -37,6 +37,7 @@ admin_tenant='admin'
 test_tenant='unittest tenant'
 test_user='unittest'
 test_timeout=300
+glance_image='cirrus'
 
 # Whether or not to test individual components
 TEST_KEYSTONE=True
@@ -44,6 +45,9 @@ TEST_GLANCE=True
 TEST_NEUTRON=True
 TEST_CINDER=True
 TEST_NOVA=True
+
+class TeapotException(Exception):
+    pass
 
 class TimeoutException(Exception):
     pass
@@ -253,9 +257,14 @@ class TestCinder(unittest.TestCase):
     def test_002_create_volume_from_image(self):
         """CINDER: Create a volume from a glance image."""
         if TEST_GLANCE:
-            # Pick the first image in the list and hope it's a good one.
-            i = self.glance.images.list().next()
-            self.testvol_002 = self.cinder.volumes.create(display_name="testvol_002", size=10, imageRef=i.id)
+            image = None
+            for i in self.glance.images.list():
+                if i.name == glance_image:
+                    image = i
+                    break
+            if image is None:
+                raise TeapotException("Couldn't find image named %s.  Do you need to set glance_image?"% (glance_image,))
+            self.testvol_002 = self.cinder.volumes.create(display_name="testvol_002", size=10, imageRef=image.id)
             self.assertTrue(self.testvol_002.id)
             i = 0
             while (i < test_timeout):
@@ -342,7 +351,8 @@ class TestNova(unittest.TestCase):
     def test_001_launch_single_instance(self):
         """NOVA: Launch a single instance."""
         f = self.nova.flavors.list()[1]
-        i = self.nova.images.list()[0]
+        i = self.nova.images.find(name=glance_image)
+        
         network = {'name': 'nova_test_001_network', 'admin_state_up': True}
         n = self.neutron.create_network({'network': network})
         netid = n.get('network', {}).get('id', None)
@@ -354,7 +364,8 @@ class TestNova(unittest.TestCase):
     def test_002_launch_single_instance_with_cinder(self):
         """NOVA: Launch a single instance from a cinder volume."""
         f = self.nova.flavors.list()[1]
-        i = self.nova.images.list()[0]
+        i = self.nova.images.find(name=glance_image)
+        
         network = {'name': 'nova_test_002_network', 'admin_state_up': True}
         n = self.neutron.create_network({'network': network})
         netid = n.get('network', {}).get('id', None)
@@ -376,7 +387,7 @@ class TestNova(unittest.TestCase):
     def test_003_multivm_with_networks(self):
         """NOVA: Launch several instances attached to networks."""
         f = self.nova.flavors.list()[1]
-        i = self.nova.images.list()[0]
+        i = self.nova.images.find(name=glance_image)
         
         network = {'name': 'nova_test_003_network1', 'admin_state_up': True}
         n = self.neutron.create_network({'network': network})
