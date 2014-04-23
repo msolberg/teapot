@@ -138,7 +138,7 @@ class TestNeutron(unittest.TestCase):
                                         password=admin_pass,
                                         tenant_name=admin_tenant)
         self.t = self.keystone.tenants.create(test_tenant)
-        self.password = str(uuid.uuid4())
+        self.password = str(uuid.uuid4())[:8]
         self.u = self.keystone.users.create(test_user, self.password, "%s@redhat.com"% test_user, self.t.id)
         self.endpoint = self.keystone.service_catalog.url_for(service_type='network',
                                                               endpoint_type='publicURL')
@@ -226,7 +226,7 @@ class TestCinder(unittest.TestCase):
                                         password=admin_pass,
                                         tenant_name=admin_tenant)
         self.t = self.keystone.tenants.create(test_tenant)
-        self.password = str(uuid.uuid4())
+        self.password = str(uuid.uuid4())[:8]
         self.u = self.keystone.users.create(test_user, self.password, "%s@redhat.com"% test_user, self.t.id)
         self.keystone_testuser = ksclient.Client(auth_url=keystone_url,
                                                  username=test_user,
@@ -333,7 +333,7 @@ class TestNova(unittest.TestCase):
                                         password=admin_pass,
                                         tenant_name=admin_tenant)
         self.t = self.keystone.tenants.create(test_tenant)
-        self.password = str(uuid.uuid4())
+        self.password = str(uuid.uuid4())[:8]
         self.u = self.keystone.users.create(test_user, self.password, "%s@redhat.com"% test_user, self.t.id)
         self.keystone_testuser = ksclient.Client(auth_url=keystone_url,
                                                  username=test_user,
