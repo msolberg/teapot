@@ -37,7 +37,7 @@ admin_tenant='admin'
 test_tenant='unittest tenant'
 test_user='unittest'
 test_timeout=300
-glance_image='cirrus'
+glance_image='cirros'
 
 # Whether or not to test individual components
 TEST_KEYSTONE=True
