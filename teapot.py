@@ -445,10 +445,39 @@ class TestNova(unittest.TestCase):
         self._clean_tenant_networks()
         self.keystone.users.delete(self.u)
         self.keystone.tenants.delete(self.t)
+    
+def usage():
+    """ Print usage information for command-line use """
+    msg = """
+Usage: teapot.py [OPTION]... [manual]
+  Run teapot with the following options:
+  
+  -k    Keystone URL (defaults to 'http://127.0.0.1:5000/v2.0')
+  -u    Admin username
+  -p    Admin password
+
+  Specify "manual" to create a test environment for manual testing.
+  
+Example:
+  teapot.py -k http://127.0.0.1:5000/v2.0 -u admin -p password manual
+"""
+    print msg
 
 if __name__ == '__main__':
     try:
-        opts, args = getopt.getopt(sys.argv[1:], '')
+        opts, args = getopt.getopt(sys.argv[1:], 'k:u:p:h')
+        
+        for o, a in opts:
+            if o == "-h":
+                usage()
+                sys.exit()
+            elif o == "-k":
+                keystone_url = a
+            elif o == "-u":
+                admin_user = a
+            elif o == "-p":
+                admin_pass = a
+        
         if "manual" in args:
              print "Creating environment for manual testing"
              tc = TestNova('test_003_multivm_with_networks')
