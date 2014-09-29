@@ -363,6 +363,9 @@ class TestNova(unittest.TestCase):
     
     def test_002_launch_single_instance_with_cinder(self):
         """NOVA: Launch a single instance from a cinder volume."""
+        if not TEST_CINDER:
+            return
+        
         f = self.nova.flavors.list()[1]
         i = self.nova.images.find(name=glance_image)
         
